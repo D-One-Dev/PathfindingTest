@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Pathfinding
 {
-    static List<DataTile> test = new List<DataTile>();
     public static List<DataTile> FindPath(DataTile startTile, DataTile endTile)
     {
-        test.Clear();
-
         List<DataTile> openSet = new List<DataTile>();
         HashSet<DataTile> closedSet = new HashSet<DataTile>();
 
@@ -41,7 +37,6 @@ public class Pathfinding
                 if (!openSet.Contains(neighbor))
                 { 
                     openSet.Add(neighbor);
-                    test.Add(neighbor);
                 }
                 else if (tentativeGCost >= gCost[neighbor]) continue;
 
@@ -88,6 +83,4 @@ public class Pathfinding
         path.Reverse();
         return path;
     }
-
-    public static List<DataTile> Test() { return test; }
 }

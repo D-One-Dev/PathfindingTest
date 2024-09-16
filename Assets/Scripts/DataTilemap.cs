@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -43,20 +42,24 @@ public class DataTilemap : MonoBehaviour
     {
         int x = tile.position.x;
         int y = tile.position.y;
+        Vector2Int[] offsets;
 
-        // If x is even, the hexagonal coordinates differ slightly compared to odd rows
-        if (x % 2 == 0)
+        if(!IsTilemapMirrored())
         {
-            Vector2Int[] offsets = new Vector2Int[] {new (1, -1), new(1, 0), new(1, 1), new(0, -1), new(0, 1), new(-1, 0)};
+            if (y % 2 == 0) offsets = new Vector2Int[] {new (1, -1), new(1, 0), new(1, 1), new(0, -1), new(-1, 0), new(0, 1)};
+            else offsets = new Vector2Int[] { new(0, -1), new(1, 0), new(0, 1), new(-1, -1), new(-1, 0), new(-1, 1) };
+
             foreach (Vector2Int offset in offsets)
             {
-                if(x + offset.x >= 0 && y + offset.y >= 0 && x + offset.x < tilemapSize.x && y + offset.y < tilemapSize.y && dataTilemap[x + offset.x, y + offset.y] != null)
+                if (x + offset.x >= 0 && y + offset.y >= 0 && x + offset.x < tilemapSize.x && y + offset.y < tilemapSize.y && dataTilemap[x + offset.x, y + offset.y] != null)
                     tile.neighbors.Add(dataTilemap[x + offset.x, y + offset.y]);
             }
         }
         else
         {
-            Vector2Int[] offsets = new Vector2Int[] { new(0, -1), new(1, 0), new(0, 1), new(-1, -1), new(-1, 0), new(-1, 1) };
+            if (y % 2 != 0) offsets = new Vector2Int[] { new(1, -1), new(1, 0), new(1, 1), new(0, -1), new(-1, 0), new(0, 1) };
+            else offsets = new Vector2Int[] { new(0, -1), new(1, 0), new(0, 1), new(-1, -1), new(-1, 0), new(-1, 1) };
+
             foreach (Vector2Int offset in offsets)
             {
                 if (x + offset.x >= 0 && y + offset.y >= 0 && x + offset.x < tilemapSize.x && y + offset.y < tilemapSize.y && dataTilemap[x + offset.x, y + offset.y] != null)
@@ -91,5 +94,12 @@ public class DataTilemap : MonoBehaviour
         int startPosX = -tilemapSize.x / 2;
         int startPosY = -tilemapSize.y / 2;
         return dataTilemapPos + new Vector2Int(startPosX, startPosY);
+    }
+
+    private bool IsTilemapMirrored()
+    {
+        int remainder = tilemapSize.x % 4;
+
+        return remainder == 0 || remainder == 1;
     }
 }

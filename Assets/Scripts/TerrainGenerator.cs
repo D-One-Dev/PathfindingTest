@@ -67,9 +67,4 @@ public class TerrainGenerator : MonoBehaviour
             return tiles[Random.Range(0, tiles.Count)];
         }
     }
-
-    private void OnValidate()
-    {
-        //GenerateTerrain();
-    }
 }
