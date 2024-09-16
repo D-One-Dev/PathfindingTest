@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149d625a167d45046a5dce414b72d92a, type: 3}
+  m_Name: Mountain
+  m_EditorClassIdentifier: 
+  Tile: {fileID: 11400000, guid: b86b61f74d56f1e41a4ca4e8e1a1007e, type: 2}
+  minHeight: 0.75
+  maxHeight: 1
+  pathWeight: 1.75
+  walkable: 1
