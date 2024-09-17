@@ -12,21 +12,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float terrainHeightOffset;
     [SerializeField] private Vector2 NoiseScale;
 
-    [SerializeField] private TileBase test;
-    void Start()
-    {
-        DataTilemap.Instance.InitializeTilemap(terrainSize);
-        GenerateTerrain();
-
-        for(int i = -1; i < 2; i++)
-        {
-            for(int j = -1; j < 2; j++)
-            {
-                if ((i == 1 && j == 1) || (i == 1 && j == -1)) continue;
-                terrainTilemap.SetTile(new Vector3Int(i, j, 0), test);
-            }
-        }
-    }
+    private DataTilemap dataTilemap;
     private void GenerateTerrain()
     {
         terrainTilemap.ClearAllTiles();
@@ -39,18 +25,16 @@ public class TerrainGenerator : MonoBehaviour
         {
             for(int j = 0; j < terrainSize.y; j++)
             {
-                TerrainTile tile = SelectRandomTile(Mathf.PerlinNoise((seedX + startPosX + i) * NoiseScale.x, (seedY + startPosY + j)) * NoiseScale.y);
+                TerrainTile tile = SelectRandomTile(GetHeight(new Vector2(seedX + startPosX + i, seedY + startPosY + j)));
                 terrainTilemap.SetTile(new Vector3Int(startPosX + i, startPosY + j, 0), tile.Tile);
-                DataTilemap.Instance.SetTerrainTile(new Vector2Int(i, j), tile);
+                dataTilemap.SetTerrainTile(new Vector2Int(i, j), tile);
             }
         }
     }
 
     private TerrainTile SelectRandomTile(float height)
     {
-        if(height > 1f) height = 1f;
-        else if (height < 0f) height = 0f;
-        height = Mathf.Pow(height, terrainHeightOffset);
+        height = Mathf.Pow(height, -terrainHeightOffset);
         List<TerrainTile> tiles = new List<TerrainTile>();
         foreach (TerrainTile tile in terrainTiles)
         {
@@ -66,5 +50,29 @@ public class TerrainGenerator : MonoBehaviour
         {
             return tiles[Random.Range(0, tiles.Count)];
         }
+    }
+
+    private void InitializeTerrain()
+    {
+        dataTilemap = DataTilemap.GetInstance();
+
+        dataTilemap.InitializeTilemap(terrainSize);
+        GenerateTerrain();
+    }
+
+    private float GetHeight(Vector2 pos)
+    {
+        float xCoord = pos.x * NoiseScale.x;
+        float yCoord = pos.y * NoiseScale.y;
+
+        float height = Mathf.PerlinNoise(xCoord, yCoord);
+        if (height < 0f) return 0f;
+        else if (height > 1f) return 1f;
+        return height;
+    }
+
+    private void OnValidate()
+    {
+        InitializeTerrain();
     }
 }

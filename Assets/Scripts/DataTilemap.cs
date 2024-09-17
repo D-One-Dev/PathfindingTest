@@ -1,17 +1,11 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DataTilemap : MonoBehaviour
+public class DataTilemap
 {
     public DataTile[,] dataTilemap;
-    public static DataTilemap Instance;
     public Vector2Int tilemapSize;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
+    private static DataTilemap Instance;
     public void InitializeTilemap(Vector2Int tilemapSize)
     {
         this.tilemapSize = tilemapSize;
@@ -101,5 +95,14 @@ public class DataTilemap : MonoBehaviour
         int remainder = tilemapSize.x % 4;
 
         return remainder == 0 || remainder == 1;
+    }
+
+    public static DataTilemap GetInstance()
+    {
+        if (Instance == null)
+        {
+            Instance = new DataTilemap();
+        }
+        return Instance;
     }
 }
