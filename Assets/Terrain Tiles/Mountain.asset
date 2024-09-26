@@ -15,5 +15,5 @@ MonoBehaviour:
   Tile: {fileID: 11400000, guid: b86b61f74d56f1e41a4ca4e8e1a1007e, type: 2}
   minHeight: 0.75
   maxHeight: 1
-  pathWeight: 2
-  walkable: 1
+  pathWeight: 4
+  surfaceType: 1

@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class Pathfinding
 {
-    public static List<DataTile> FindPath(DataTile startTile, DataTile endTile)
+    public static List<GameTile> FindPath(GameTile startTile, GameTile endTile)
     {
-        List<DataTile> openSet = new List<DataTile>();
-        HashSet<DataTile> closedSet = new HashSet<DataTile>();
+        List<GameTile> openSet = new List<GameTile>();
+        HashSet<GameTile> closedSet = new HashSet<GameTile>();
 
-        Dictionary<DataTile, float> gCost = new Dictionary<DataTile, float>();
-        Dictionary<DataTile, float> fCost = new Dictionary<DataTile, float>();
-        Dictionary<DataTile, DataTile> cameFrom = new Dictionary<DataTile, DataTile>();
+        Dictionary<GameTile, float> gCost = new Dictionary<GameTile, float>();
+        Dictionary<GameTile, float> fCost = new Dictionary<GameTile, float>();
+        Dictionary<GameTile, GameTile> cameFrom = new Dictionary<GameTile, GameTile>();
 
         openSet.Add(startTile);
         gCost[startTile] = 0;
@@ -18,7 +18,7 @@ public class Pathfinding
 
         while (openSet.Count > 0)
         {
-            DataTile current = GetLowestFCostTile(openSet, fCost, gCost);
+            GameTile current = GetLowestFCostTile(openSet, fCost, gCost);
 
             if(current == endTile)
             {
@@ -28,11 +28,11 @@ public class Pathfinding
             openSet.Remove(current);
             closedSet.Add(current);
 
-            foreach (DataTile neighbor in current.neighbors)
+            foreach (GameTile neighbor in current.neighbors)
             {
-                if (neighbor == null || !neighbor.terrainTile.walkable || closedSet.Contains(neighbor)) continue;
+                if (neighbor == null || neighbor.surfaceType == SurfaceType.Water || closedSet.Contains(neighbor)) continue;
 
-                float tentativeGCost = gCost[current] + neighbor.terrainTile.pathWeight;
+                float tentativeGCost = gCost[current] + neighbor.pathWeight;
 
                 if (!openSet.Contains(neighbor))
                 { 
@@ -49,17 +49,17 @@ public class Pathfinding
         return null;
     }
 
-    static float GetDistance(DataTile tileA, DataTile tileB)
+    static float GetDistance(GameTile tileA, GameTile tileB)
     {
         return Mathf.Abs(tileA.position.x - tileB.position.x) + Mathf.Abs(tileA.position.y - tileB.position.y);
     }
 
-    static DataTile GetLowestFCostTile(List<DataTile> openList, Dictionary<DataTile, float> fCost, Dictionary<DataTile, float> gCost)
+    static GameTile GetLowestFCostTile(List<GameTile> openList, Dictionary<GameTile, float> fCost, Dictionary<GameTile, float> gCost)
     {
-        DataTile lowestCostTile = openList[0];
+        GameTile lowestCostTile = openList[0];
         float lowestFCost = fCost[lowestCostTile];
 
-        foreach (DataTile tile in openList)
+        foreach (GameTile tile in openList)
         {
             if (fCost[tile] < lowestFCost)
             {
@@ -71,9 +71,9 @@ public class Pathfinding
         return lowestCostTile;
     }
 
-    static List<DataTile> RetracePath(Dictionary<DataTile, DataTile> cameFrom, DataTile current)
+    static List<GameTile> RetracePath(Dictionary<GameTile, GameTile> cameFrom, GameTile current)
     {
-        List<DataTile> path = new List<DataTile>();
+        List<GameTile> path = new List<GameTile>();
         while (cameFrom.ContainsKey(current))
         {
             path.Add(current);

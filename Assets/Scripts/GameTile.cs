@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,6 +11,7 @@ public enum SurfaceType
 public class GameTile
 {
     public Vector2Int position;
+    public List<GameTile> neighbors;
     public SurfaceType surfaceType;
     public int pathWeight;
     public Building building;
@@ -21,5 +23,6 @@ public class GameTile
     public GameTile(Vector2Int position)
     {
         this.position = position;
+        neighbors = new List<GameTile>();
     }
 }

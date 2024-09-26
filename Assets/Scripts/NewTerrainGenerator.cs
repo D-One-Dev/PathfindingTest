@@ -2,34 +2,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TerrainGenerator : MonoBehaviour
+public class NewTerrainGenerator : MonoBehaviour
 {
+    private GameTilemap _gameTilemap;
+    private VisualTilemapController _visualTilemapController;
+
     [SerializeField] private Tilemap terrainTilemap;
     [SerializeField] private TerrainTile[] terrainTiles;
 
     [Header("Terrain generation settings")]
     [SerializeField] private Vector2Int terrainSize;
     [SerializeField] private float terrainHeightOffset;
-    [SerializeField] private Vector2 NoiseScale;
+    [SerializeField] private Vector2 noiseScale;
 
-    private DataTilemap dataTilemap;
+    private void Awake()
+    {
+        _gameTilemap = GameTilemap.GetInstance();
+        _visualTilemapController = VisualTilemapController.GetInstance(terrainTilemap);
+    }
+
+    private void Start()
+    {
+        GenerateTerrain();
+    }
+
     private void GenerateTerrain()
     {
-        terrainTilemap.ClearAllTiles();
+        _gameTilemap.InitializeTilemap(_visualTilemapController, terrainSize);
+
         float seedX = Random.Range(-10000f, 10000f);
         float seedY = Random.Range(-10000f, 10000f);
 
-        int startPosX = -terrainSize.x/2;
-        int startPosY = -terrainSize.y/2;
-        for(int i = 0; i < terrainSize.x; i++)
+        int startPosX = -terrainSize.x / 2;
+        int startPosY = -terrainSize.y / 2;
+        for (int i = 0; i < terrainSize.x; i++)
         {
-            for(int j = 0; j < terrainSize.y; j++)
+            for (int j = 0; j < terrainSize.y; j++)
             {
-                TerrainTile tile = SelectRandomTile(GetHeight(new Vector2(seedX + startPosX + i, seedY + startPosY + j)));
-                terrainTilemap.SetTile(new Vector3Int(startPosX + i, startPosY + j, 0), tile.Tile);
-                dataTilemap.SetTerrainTile(new Vector2Int(i, j), tile);
+                TerrainTile terrainTile = SelectRandomTile(GetHeight(new Vector2(seedX + startPosX + i, seedY + startPosY + j)));
+
+                GameTile tile = _gameTilemap.GetTile(new Vector2Int(i, j));
+                tile.surfaceType = terrainTile.surfaceType;
+                tile.pathWeight = terrainTile.pathWeight;
+                tile.tileVisual = terrainTile.Tile;
             }
         }
+
+        _gameTilemap.UpdateTilemap();
     }
 
     private TerrainTile SelectRandomTile(float height)
@@ -52,18 +71,10 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
 
-    private void InitializeTerrain()
-    {
-        dataTilemap = DataTilemap.GetInstance();
-
-        dataTilemap.InitializeTilemap(terrainSize);
-        GenerateTerrain();
-    }
-
     private float GetHeight(Vector2 pos)
     {
-        float xCoord = pos.x * NoiseScale.x;
-        float yCoord = pos.y * NoiseScale.y;
+        float xCoord = pos.x * noiseScale.x;
+        float yCoord = pos.y * noiseScale.y;
 
         float height = Mathf.PerlinNoise(xCoord, yCoord);
         if (height < 0f) return 0f;
@@ -73,6 +84,8 @@ public class TerrainGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        InitializeTerrain();
+        //_gameTilemap = GameTilemap.GetInstance();
+        //_visualTilemapController = VisualTilemapController.GetInstance(terrainTilemap);
+        //GenerateTerrain();
     }
 }
