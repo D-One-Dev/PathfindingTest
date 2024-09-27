@@ -23,10 +23,16 @@ public class NewTerrainGenerator : MonoBehaviour
 
     private void Start()
     {
-        GenerateTerrain();
+        GameSave save = JsonSerialization.ReadSave();
+        if (save == null) GenerateTerrain();
+        else
+        {
+            _gameTilemap.InitializeTilemap(_visualTilemapController, terrainSize);
+            _gameTilemap.SetTilemap(save.GetTilemap());
+        }
     }
 
-    private void GenerateTerrain()
+    public void GenerateTerrain()
     {
         _gameTilemap.InitializeTilemap(_visualTilemapController, terrainSize);
 
@@ -49,6 +55,8 @@ public class NewTerrainGenerator : MonoBehaviour
         }
 
         _gameTilemap.UpdateTilemap();
+
+        JsonSerialization.WriteSave(new GameSave(_gameTilemap.Tilemap, terrainSize));
     }
 
     private TerrainTile SelectRandomTile(float height)

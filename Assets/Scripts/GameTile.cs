@@ -1,16 +1,21 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[Serializable]
 public enum SurfaceType
 {
     None = 0,
     Ground = 1,
     Water = 2
 }
+
+[Serializable]
 public class GameTile
 {
     public Vector2Int position;
+    [NonSerialized]
     public List<GameTile> neighbors;
     public SurfaceType surfaceType;
     public int pathWeight;

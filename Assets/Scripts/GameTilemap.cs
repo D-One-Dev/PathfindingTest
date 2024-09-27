@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameTilemap
@@ -53,7 +54,7 @@ public class GameTilemap
 
     public GameTile GetTile(Vector2Int position)
     {
-        return Tilemap[position.x, position.y];
+        return _tilemap[position.x, position.y];
     }
 
     public void UpdateTilemap()
@@ -63,6 +64,7 @@ public class GameTilemap
             for (int j = 0; j < _tilemapSize.y; j++)
             {
                 Vector2Int position = ArrayToTilemap(new Vector2Int(i, j));
+                Debug.Log(GetTile(new Vector2Int(i, j)).tileVisual);
                 _visualTilemapController.SetTile(position, GetTile(new Vector2Int(i, j)).tileVisual);
             }
         }
@@ -82,6 +84,7 @@ public class GameTilemap
 
     private void SetNeighbors(GameTile tile)
     {
+        tile.neighbors = new List<GameTile>();
         int x = tile.position.x;
         int y = tile.position.y;
         Vector2Int[] offsets;
@@ -109,5 +112,12 @@ public class GameTilemap
         int remainder = _tilemapSize.x % 4;
 
         return remainder == 0 || remainder == 1;
+    }
+
+    public void SetTilemap(GameTile[,] tilemap)
+    {
+        _tilemap = tilemap;
+        foreach (GameTile tile in Tilemap) SetNeighbors(tile);
+        UpdateTilemap();
     }
 }
