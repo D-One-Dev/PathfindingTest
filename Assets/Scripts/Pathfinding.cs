@@ -5,6 +5,8 @@ public class Pathfinding
 {
     public static List<GameTile> FindPath(GameTile startTile, GameTile endTile)
     {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
         List<GameTile> openSet = new List<GameTile>();
         HashSet<GameTile> closedSet = new HashSet<GameTile>();
 
@@ -22,6 +24,9 @@ public class Pathfinding
 
             if(current == endTile)
             {
+                watch.Stop();
+                Debug.LogWarningFormat("Pathfinding time: " + watch.ElapsedMilliseconds + " msec.");
+
                 return RetracePath(cameFrom, current);
             }
 
@@ -45,6 +50,8 @@ public class Pathfinding
                 fCost[neighbor] = gCost[neighbor] + GetDistance(neighbor, endTile);
             }
         }
+        watch.Stop();
+        Debug.LogWarningFormat("Pathfinding time: " + watch.ElapsedMilliseconds + " msec.");
 
         return null;
     }

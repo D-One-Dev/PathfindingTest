@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class JsonSerialization
+public static class JsonSerialization
 {
     private static readonly string SAVE_PATH = "/GameSave.savefile";
     public static void WriteSave(GameSave save)

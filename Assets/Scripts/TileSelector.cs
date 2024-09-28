@@ -53,14 +53,26 @@ public class TileSelector : MonoBehaviour
 
     private void OnMainClick()
     {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
         Vector3Int targetPos = GetTile();
         Vector2Int target = _gameTilemap.TilemapToArray(new Vector2Int(targetPos.x, targetPos.y));
 
         if (target.x >= 0 && target.y >= 0 && target.x < _gameTilemap.TilemapSize.x && target.y < _gameTilemap.TilemapSize.y)
         {
             List<GameTile> path = Pathfinding.FindPath(_gameTilemap.Tilemap[0, 0], _gameTilemap.Tilemap[target.x, target.y]);
-            if (path == null) Debug.LogWarning("Couldn't reach target tile");
-            else VisualizePath(path);
+            if (path == null)
+            {
+                Debug.LogWarning("Couldn't reach target tile");
+                watch.Stop();
+                Debug.LogWarningFormat("Total time: " + watch.ElapsedMilliseconds + " msec.");
+            }
+            else
+            {
+                watch.Stop();
+                Debug.LogWarningFormat("Total time: " + watch.ElapsedMilliseconds + " msec.");
+                VisualizePath(path);
+            }
         }
     }
 }
