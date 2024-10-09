@@ -1,20 +1,11 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 
 public class VisualTilemapController
 {
-    private static VisualTilemapController Instance;
-    private Tilemap _visualTilemap;
-
-    public static VisualTilemapController GetInstance(Tilemap visualTilemap)
-    {
-        if (Instance == null)
-        {
-            Instance = new VisualTilemapController();
-            Instance._visualTilemap = visualTilemap;
-        }
-        return Instance;
-    }
+    [Inject(Id = "TerrainTilemap")]
+    private readonly Tilemap _visualTilemap;
 
     public void ClearAllVisualTiles()
     {

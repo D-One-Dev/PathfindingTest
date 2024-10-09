@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public class GameTilemap
 {
@@ -7,13 +8,17 @@ public class GameTilemap
     private VisualTilemapController _visualTilemapController;
     public GameTile[,] Tilemap {get => _tilemap;}
     public Vector2Int TilemapSize {get => _tilemapSize;}
-    private static GameTilemap Instance;
 
-    public void InitializeTilemap(VisualTilemapController visualTilemapController, Vector2Int tilemapSize)
+    [Inject]
+    public void Construct(VisualTilemapController visualTilemapController)
+    {
+        _visualTilemapController = visualTilemapController;
+    }
+
+    public void InitializeTilemap(Vector2Int tilemapSize)
     {
         _tilemapSize = tilemapSize;
         _tilemap = new GameTile[_tilemapSize.x, _tilemapSize.y];
-        _visualTilemapController = visualTilemapController;
 
         _visualTilemapController.ClearAllVisualTiles();
 
@@ -31,12 +36,6 @@ public class GameTilemap
     private void InitializeTile(Vector2Int position)
     {
         Tilemap[position.x, position.y] = new GameTile(position);
-    }
-
-    public static GameTilemap GetInstance()
-    {
-        if(Instance == null) Instance = new GameTilemap();
-        return Instance;
     }
 
     public void ClearAllTiles()

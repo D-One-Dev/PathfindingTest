@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 
 public class NewTerrainGenerator : MonoBehaviour
 {
@@ -15,10 +16,11 @@ public class NewTerrainGenerator : MonoBehaviour
     [SerializeField] private float terrainHeightOffset;
     [SerializeField] private Vector2 noiseScale;
 
-    private void Awake()
+    [Inject]
+    public void Construct(VisualTilemapController visualTilemapController, GameTilemap gameTilemap)
     {
-        _gameTilemap = GameTilemap.GetInstance();
-        _visualTilemapController = VisualTilemapController.GetInstance(terrainTilemap);
+        _visualTilemapController = visualTilemapController;
+        _gameTilemap = gameTilemap;
     }
 
     private void Start()
@@ -28,7 +30,7 @@ public class NewTerrainGenerator : MonoBehaviour
 
     private void GenerateTerrain()
     {
-        _gameTilemap.InitializeTilemap(_visualTilemapController, terrainSize);
+        _gameTilemap.InitializeTilemap(terrainSize);
 
         float seedX = Random.Range(-10000f, 10000f);
         float seedY = Random.Range(-10000f, 10000f);

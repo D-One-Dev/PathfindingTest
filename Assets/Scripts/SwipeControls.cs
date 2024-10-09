@@ -1,24 +1,30 @@
 using UnityEngine;
+using Zenject;
 
 public class SwipeControls : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
-    [SerializeField] private GameObject cam;
     [SerializeField] private float movementFriction;
-    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float mouseZoomAmount;
     [SerializeField] private float minCamScale, maxCamScale;
+
+    [Inject(Id = "Camera")]
+    private readonly GameObject cam;
+    [Inject(Id = "Camera")]
+    private readonly Rigidbody2D rb;
+
     private bool _primaryTouch;
     private bool _secondTouch;
-    private float initialFingerDistance;
-    private float FingerDistanceDelta;
-    private float initialCamScale;
+    private float _initialFingerDistance;
+    private float _fingerDistanceDelta;
+    private float _initialCamScale;
 
     private Controls _controls;
 
-    private void Awake()
+    [Inject]
+    public void Construct(Controls controls)
     {
-        _controls = new Controls();
+        _controls = controls;
     }
 
     private void OnEnable()
@@ -38,7 +44,7 @@ public class SwipeControls : MonoBehaviour
         _controls.Gameplay.SecondTouch.started += ctx =>
         {
             _secondTouch = true;
-            initialFingerDistance = 0f;
+            _initialFingerDistance = 0f;
         };
         _controls.Gameplay.SecondTouch.canceled += ctx => _secondTouch = false;
     }
@@ -58,21 +64,21 @@ public class SwipeControls : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 Vector2 firstFingerPos = _controls.Gameplay.PrimaryTouchPos.ReadValue<Vector2>();
                 Vector2 secondFingerPos = _controls.Gameplay.SecondTouchPos.ReadValue<Vector2>();
-                if (initialFingerDistance == 0f)
+                if (_initialFingerDistance == 0f)
                 {
-                    initialFingerDistance = Mathf.Sqrt(Mathf.Pow((firstFingerPos.x - secondFingerPos.x), 2) +
+                    _initialFingerDistance = Mathf.Sqrt(Mathf.Pow((firstFingerPos.x - secondFingerPos.x), 2) +
                         Mathf.Pow((firstFingerPos.y - secondFingerPos.y), 2));
-                    FingerDistanceDelta = 0f;
-                    initialCamScale = cam.GetComponent<Camera>().orthographicSize / initialFingerDistance;
+                    _fingerDistanceDelta = 0f;
+                    _initialCamScale = cam.GetComponent<Camera>().orthographicSize / _initialFingerDistance;
                 }
                 else
                 {
-                    FingerDistanceDelta = Mathf.Sqrt(Mathf.Pow((firstFingerPos.x - secondFingerPos.x), 2) +
+                    _fingerDistanceDelta = Mathf.Sqrt(Mathf.Pow((firstFingerPos.x - secondFingerPos.x), 2) +
                         Mathf.Pow((firstFingerPos.y - secondFingerPos.y), 2));
 
-                    float delta = FingerDistanceDelta - initialFingerDistance;
+                    float delta = _fingerDistanceDelta - _initialFingerDistance;
 
-                    cam.GetComponent<Camera>().orthographicSize = Mathf.Clamp((initialCamScale * (initialFingerDistance - delta)), minCamScale, maxCamScale);
+                    cam.GetComponent<Camera>().orthographicSize = Mathf.Clamp((_initialCamScale * (_initialFingerDistance - delta)), minCamScale, maxCamScale);
                 }
             }
 

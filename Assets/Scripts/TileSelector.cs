@@ -1,20 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 
 public class TileSelector : MonoBehaviour
 {
-    [SerializeField] private Tilemap terrainTilemap;
-    [SerializeField] private TileBase pathTile;
+    [Inject(Id = "TerrainTilemap")]
+    private readonly Tilemap terrainTilemap;
+    [Inject(Id = "PathTile")]
+    private readonly TileBase pathTile;
+
     private GameTilemap _gameTilemap;
     private VisualTilemapController _visualTilemapController;
 
     private Controls _controls;
 
+    [Inject]
+    public void Construct(Controls controls, VisualTilemapController visualTilemapController, GameTilemap gameTilemap)
+    {
+        _controls = controls;
+        _visualTilemapController = visualTilemapController;
+        _gameTilemap = gameTilemap;
+    }
+
     private void Awake()
     {
-        _controls = new Controls();
-
         _controls.Gameplay.MainClick.performed += ctx => OnMainClick();
     }
 
@@ -26,12 +36,6 @@ public class TileSelector : MonoBehaviour
     private void OnDisable()
     {
         _controls.Disable();
-    }
-
-    private void Start()
-    {
-        _gameTilemap = GameTilemap.GetInstance();
-        _visualTilemapController = VisualTilemapController.GetInstance(terrainTilemap);
     }
 
     private Vector3Int GetTile()
