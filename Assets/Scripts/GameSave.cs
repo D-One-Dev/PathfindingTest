@@ -24,7 +24,6 @@ public class GameSave
     public GameTile[,] GetTilemap()
     {
         GameTile[,] tilemap = new GameTile[tilemapSize.x, tilemapSize.y];
-        int arraySize = tilemapSize.x * tilemapSize.y;
 
         for (int i = 0; i < tilemapSize.x; i++)
         {

@@ -727,8 +727,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89d7b47d53d3eaa438372dec1813fe76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FPSText: {fileID: 604845172}
-  minFPSText: {fileID: 1083859534}
 --- !u!1 &1083859531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1142,6 +1140,8 @@ MonoBehaviour:
   cameraGameObject: {fileID: 519420028}
   cameraRigidbody: {fileID: 519420034}
   pathTile: {fileID: 11400000, guid: 7e737ea885769044c94aa8290f93defc, type: 2}
+  currentFPSText: {fileID: 604845172}
+  minFPSText: {fileID: 1083859534}
 --- !u!114 &1188021456
 MonoBehaviour:
   m_ObjectHideFlags: 0

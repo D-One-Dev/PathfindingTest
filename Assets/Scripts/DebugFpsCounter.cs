@@ -1,10 +1,14 @@
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class DebugFpsCounter : MonoBehaviour
 {
-    [SerializeField] private TMP_Text FPSText;
-    [SerializeField] private TMP_Text minFPSText;
+    [Inject(Id = "CurrentFPSText")]
+    private readonly TMP_Text FPSText;
+    [Inject(Id = "MinFPSText")]
+    private readonly TMP_Text minFPSText;
+
     private int minFPS = 50000;
 
     private void Start()

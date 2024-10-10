@@ -1,11 +1,13 @@
 using UnityEngine;
+using Zenject;
 
 public class SaveController : MonoBehaviour
 {
-    private readonly string SAVE_PATH = "/GameSave.savefile";
+    [Inject(Id = "SavePath")]
+    private readonly string _savePath;
     public void EraseSaveFile()
     {
-        string path = Application.persistentDataPath + SAVE_PATH;
+        string path = Application.persistentDataPath + _savePath;
         if (System.IO.File.Exists(path))
         {
             System.IO.File.Delete(path);

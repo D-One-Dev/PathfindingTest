@@ -5,9 +5,6 @@ using Zenject;
 
 public class NewTerrainGenerator : MonoBehaviour
 {
-    private GameTilemap _gameTilemap;
-    private VisualTilemapController _visualTilemapController;
-
     [SerializeField] private Tilemap terrainTilemap;
     [SerializeField] private TerrainTile[] terrainTiles;
 
@@ -16,16 +13,19 @@ public class NewTerrainGenerator : MonoBehaviour
     [SerializeField] private float terrainHeightOffset;
     [SerializeField] private Vector2 noiseScale;
 
+    private GameTilemap _gameTilemap;
+    private JsonSerialization _jsonSerialization;
+
     [Inject]
-    public void Construct(VisualTilemapController visualTilemapController, GameTilemap gameTilemap)
+    public void Construct(VisualTilemapController visualTilemapController, GameTilemap gameTilemap, JsonSerialization jsonSerialization)
     {
-        _visualTilemapController = visualTilemapController;
         _gameTilemap = gameTilemap;
+        _jsonSerialization = jsonSerialization;
     }
 
     private void Start()
     {
-        GameSave save = JsonSerialization.ReadSave();
+        GameSave save = _jsonSerialization.ReadSave();
         if (save == null) GenerateTerrain();
         else
         {
@@ -58,7 +58,7 @@ public class NewTerrainGenerator : MonoBehaviour
 
         _gameTilemap.UpdateTilemap();
 
-        JsonSerialization.WriteSave(new GameSave(_gameTilemap.Tilemap, terrainSize));
+        _jsonSerialization.WriteSave(new GameSave(_gameTilemap.Tilemap, terrainSize));
     }
 
     private TerrainTile SelectRandomTile(float height)
@@ -90,12 +90,5 @@ public class NewTerrainGenerator : MonoBehaviour
         if (height < 0f) return 0f;
         else if (height > 1f) return 1f;
         return height;
-    }
-
-    private void OnValidate()
-    {
-        //_gameTilemap = GameTilemap.GetInstance();
-        //_visualTilemapController = VisualTilemapController.GetInstance(terrainTilemap);
-        //GenerateTerrain();
     }
 }

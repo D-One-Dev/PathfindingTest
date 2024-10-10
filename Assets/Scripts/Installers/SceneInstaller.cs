@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
@@ -8,6 +9,8 @@ public class SceneInstaller : MonoInstaller
     [SerializeField] private GameObject cameraGameObject;
     [SerializeField] private Rigidbody2D cameraRigidbody;
     [SerializeField] private TileBase pathTile;
+    [SerializeField] private TMP_Text currentFPSText;
+    [SerializeField] private TMP_Text minFPSText;
     public override void InstallBindings()
     {
         this.Container
@@ -19,7 +22,7 @@ public class SceneInstaller : MonoInstaller
             .Bind<Tilemap>()
             .WithId("TerrainTilemap")
             .FromInstance(terrainTilemap)
-            .AsSingle();
+            .AsCached();
         this.Container
             .Bind<VisualTilemapController>()
             .To<VisualTilemapController>()
@@ -32,16 +35,26 @@ public class SceneInstaller : MonoInstaller
             .Bind<GameObject>()
             .WithId("Camera")
             .FromInstance(cameraGameObject)
-            .AsSingle();
+            .AsCached();
         this.Container
             .Bind<Rigidbody2D>()
             .WithId("Camera")
             .FromInstance(cameraRigidbody)
-            .AsSingle();
+            .AsCached();
         this.Container
             .Bind<TileBase>()
             .WithId("PathTile")
             .FromInstance(pathTile)
-            .AsSingle();
+            .AsCached();
+        this.Container
+            .Bind<TMP_Text>()
+            .WithId("CurrentFPSText")
+            .FromInstance(currentFPSText)
+            .AsCached();
+        this.Container
+            .Bind<TMP_Text>()
+            .WithId("MinFPSText")
+            .FromInstance(minFPSText)
+            .AsCached();
     }
 }
